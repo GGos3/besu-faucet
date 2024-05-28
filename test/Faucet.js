@@ -18,15 +18,15 @@ describe("Faucet", async () => {
 
     describe("Initialize", async () => {
         it('should initialize once', async () => {
-            await expect(
-                faucet.initialize()
-            ).to.be.revertedWithCustomError(faucet, "InvalidInitialization");
+            expect(faucet.initialize())
+                .to.be.revertedWithCustomError(faucet, "InvalidInitialization");
         });
 
         it('should Owner Account Has Role DEFAULT_ADMIN_ROLE', async () => {
             const defaultAdminRole = ethers.ZeroHash;
 
-            expect(await faucet.hasRole(defaultAdminRole, await owner.getAddress())).to.be.true;
+            expect(await faucet.hasRole(defaultAdminRole, await owner.getAddress()))
+                .to.be.true;
         });
     });
-}
+});
