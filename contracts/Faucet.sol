@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -12,15 +12,24 @@ contract Faucet is Initializable, AccessControl {
     bytes32 private constant ROLE_ADMIN = keccak256("ROLE_ADMIN");
 
     event FaucetEvent(address indexed from, address indexed to, uint256 amount);
+    event FundsReceived(address indexed from, uint256 amount);
+
+    error DailyLimitReached(address account, uint256 timestamp);
 
     modifier checkTimestamp(address _to) {
-        require(block.timestamp - _lastFaucet[_to] > 1 days, "Faucet: only once a day");
+        if (_lastFaucet[_to] + 1 days > block.timestamp) {
+            revert DailyLimitReached(_to, _lastFaucet[_to]);
+        }
         _;
+    }
+
+    receive() external payable {
+        emit FundsReceived(msg.sender, msg.value);
     }
 
     function initialize() public initializer {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _grantRole(ROLE_ADMIN, msg.sender);
+    _grantRole(ROLE_ADMIN, msg.sender);
     }
 
     function faucet(address _to, uint256 _amount) public checkTimestamp(_to) onlyRole(ROLE_ADMIN) {
@@ -32,10 +41,6 @@ contract Faucet is Initializable, AccessControl {
     function _faucet(address _to, uint256 _amount) internal {
         payable(_to).transfer(_amount);
         _lastFaucet[_to] = block.timestamp;
-    }
-
-    function getBalance() public onlyRole(ROLE_ADMIN) view returns (uint256) {
-        return address(this).balance;
     }
 
     function getLastFaucet(address _account) public view returns (uint256) {
