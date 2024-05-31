@@ -16,7 +16,7 @@ Below is an example of the config section. This configuration is essential for s
   ...
 }
 ```
-blockreward: Configures the reward for mining a block, specified in Wei. In the provided example, the reward is 50,000,000 Wei per block.
+- blockreward: Configures the reward for mining a block, specified in Wei. In the provided example, the reward is 50,000,000 Wei per block.
 
 ## Installation and Execution Guide
 Follow these steps to set up and run the project.
