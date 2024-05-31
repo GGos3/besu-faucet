@@ -9,9 +9,6 @@ Below is an example of the config section. This configuration is essential for s
   "config": {
     ...
     "qbft": {
-      "blockperiodseconds": 2,
-      "epochlength": 30000,
-      "requesttimeoutseconds": 4,
       // Block Reward Option
       "blockreward": "50000000"
     }
